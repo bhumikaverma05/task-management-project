@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { User, Mail, Lock } from 'lucide-react';
 
 const Signup = () => {
   const [name, setName] = useState('');
@@ -15,8 +16,8 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!name || !email || !password) {
-      setError('Please fill all fields');
+    if (!name || !email || !password || !confirm) {
+      setError('Please fill out all fields');
       return;
     }
     if (password !== confirm) {
@@ -29,7 +30,7 @@ const Signup = () => {
       await auth.signup({ name, email, password });
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Signup failed');
+      setError(err?.message || 'Signup failed');
     } finally {
       setLoading(false);
     }
