@@ -3,8 +3,6 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import SummaryCard from './SummaryCard';
 import KanbanColumn from './KanbanColumn';
-// FIX: Import the specific styles for the dashboard layout
-import './styles.css'; 
 
 const Dashboard = () => {
   const summaryData = {

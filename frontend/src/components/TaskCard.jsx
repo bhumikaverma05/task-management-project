@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // FIX: Import Link
 import { Calendar, Flag } from 'lucide-react';
 
 const TaskCard = ({ task, status }) => {
@@ -12,28 +11,36 @@ const TaskCard = ({ task, status }) => {
     return colors[priority] || colors.medium;
   };
 
+  const getPriorityIcon = (priority) => {
+    const icons = {
+      high: '🔴',
+      medium: '🟡',
+      low: '🟢'
+    };
+    return icons[priority] || icons.medium;
+  };
+
   return (
-    // FIX: Add Link wrapper to enable navigation
-    <Link to={`/tasks/${task.id}`} className="block">
-      <div className="task-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-        <div className="mb-2">
-          <h4 className="font-bold text-slate-800">{task.title}</h4>
-        </div>
-        
-        <p className="text-sm text-slate-500 mb-4 line-clamp-2">{task.description}</p>
-        
-        <div className="flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-2 text-slate-400 text-xs font-medium">
+    <div className="task-card">
+      <div className="task-header">
+        <h4 className="task-title">{task.title}</h4>
+      </div>
+      
+      <p className="task-description">{task.description}</p>
+      
+      <div className="task-footer">
+        <div className="task-meta">
+          <div className="due-date">
             <Calendar size={14} />
             <span>{task.dueDate}</span>
           </div>
-          <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${getPriorityColor(task.priority)}`}>
-            <Flag size={12} />
+          <div className={`priority-tag ${getPriorityColor(task.priority)}`}>
+            <Flag size={14} />
             <span className="capitalize">{task.priority}</span>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 
