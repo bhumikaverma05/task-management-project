@@ -11,6 +11,7 @@ const Dashboard = () => {
     completed: 86,
     pendingReview: 4
   };
+  const [tasks, setTasks] = useState([]);
 
   const moveTask = (taskId, newStatus) => {
     setTasks(prev =>
