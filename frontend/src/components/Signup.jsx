@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+// Icons are imported but were not being used; you can use them to enhance the UI if desired
 import { User, Mail, Lock } from 'lucide-react';
 
 const Signup = () => {
@@ -16,6 +17,8 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    // Validation checks
     if (!name || !email || !password || !confirm) {
       setError('Please fill out all fields');
       return;
@@ -27,7 +30,9 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      await auth.signup({ name, email, password });
+      // FIX: Used auth.signUp (camelCase) and passed arguments as (email, password)
+      // to match the signature in AuthContext.jsx
+      await auth.signUp(email, password);
       navigate('/dashboard');
     } catch (err) {
       setError(err?.message || 'Signup failed');
@@ -51,6 +56,22 @@ const Signup = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* ADDED: Name Field */}
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              Full Name
+            </label>
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
+              placeholder="Enter your full name"
+            />
+          </div>
+
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
               Email
@@ -78,6 +99,22 @@ const Signup = () => {
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
               placeholder="Enter your password"
+            />
+          </div>
+
+          {/* ADDED: Confirm Password Field */}
+          <div>
+            <label htmlFor="confirm" className="block text-sm font-medium text-gray-700 mb-2">
+              Confirm Password
+            </label>
+            <input
+              id="confirm"
+              type="password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
+              placeholder="Confirm your password"
             />
           </div>
 
