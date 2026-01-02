@@ -1,45 +1,35 @@
-import React from 'react';
-import { Calendar, Flag } from 'lucide-react';
+import { useAuth } from "../context/AuthContext";
 
-const TaskCard = ({ task, status }) => {
-  const getPriorityColor = (priority) => {
-    const colors = {
-      high: 'text-red-500 bg-red-100',
-      medium: 'text-amber-500 bg-amber-100',
-      low: 'text-green-500 bg-green-100'
-    };
-    return colors[priority] || colors.medium;
-  };
+const TaskCard = ({ task }) => {
+  const { user } = useAuth();
+  const role = user?.role || "member";
 
-  const getPriorityIcon = (priority) => {
-    const icons = {
-      high: '🔴',
-      medium: '🟡',
-      low: '🟢'
-    };
-    return icons[priority] || icons.medium;
-  };
+  const isDone = task.status === "completed";
 
   return (
     <div className="task-card">
-      <div className="task-header">
-        <h4 className="task-title">{task.title}</h4>
+      <div>
+        <p className="task-title">{task.title}</p>
+        <p className="task-description">{task.description}</p>
       </div>
-      
-      <p className="task-description">{task.description}</p>
-      
-      <div className="task-footer">
-        <div className="task-meta">
-          <div className="due-date">
-            <Calendar size={14} />
-            <span>{task.dueDate}</span>
-          </div>
-          <div className={`priority-tag ${getPriorityColor(task.priority)}`}>
-            <Flag size={14} />
-            <span className="capitalize">{task.priority}</span>
-          </div>
+
+      {/* STATUS */}
+      <div className="task-status">
+        <span
+          className={`status-badge ${
+            isDone ? "status-done" : "status-pending"
+          }`}
+        >
+          {isDone ? "Done" : "Pending"}
+        </span>
+      </div>
+
+      {/* MEMBER NOTE (READ ONLY) */}
+      {role === "member" && task.note && (
+        <div className="task-note">
+          <strong>Message:</strong> {task.note}
         </div>
-      </div>
+      )}
     </div>
   );
 };

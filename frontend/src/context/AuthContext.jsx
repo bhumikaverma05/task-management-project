@@ -1,68 +1,109 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-// Simple AuthContext placeholder. The original Supabase-backed implementation
-// can replace this file later. This provides the same interface used
-// throughout the app: `AuthProvider` and `useAuth`.
-
-const AuthContext = createContext(null);
+const AuthContext = createContext({
+  user: null,
+  token: null,
+  isAuthenticated: false,
+  login: async () => {},
+  signup: async () => {},
+  logout: () => {}
+});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // Load auth from storage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('auth');
+      const stored = localStorage.getItem("auth");
       if (stored) {
         const parsed = JSON.parse(stored);
         setUser(parsed.user || null);
         setToken(parsed.token || null);
       }
     } catch (e) {
-      // ignore parse errors
+      console.error("Auth parse error", e);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
+  // Persist auth
   useEffect(() => {
-    if (user || token) {
-      localStorage.setItem('auth', JSON.stringify({ user, token }));
+    if (token) {
+      localStorage.setItem(
+        "auth",
+        JSON.stringify({ user, token })
+      );
     } else {
-      localStorage.removeItem('auth');
+      localStorage.removeItem("auth");
     }
   }, [user, token]);
 
   const login = async ({ email, password }) => {
-    if (!email || !password) throw new Error('Missing credentials');
-    const mockToken = 'mock-token';
-    const mockUser = { name: email.split('@')[0], email };
-    setToken(mockToken);
+    if (!email || !password) {
+      throw new Error("Missing credentials");
+    }
+
+    // mock login
+    const mockToken = "mock-token";
+    const mockUser = {
+      name: email.split("@")[0],
+      email
+    };
+
     setUser(mockUser);
+    setToken(mockToken);
+
     return { user: mockUser, token: mockToken };
   };
 
   const signup = async ({ name, email, password }) => {
-    if (!name || !email || !password) throw new Error('Missing fields');
-    const mockToken = 'mock-token';
+    if (!name || !email || !password) {
+      throw new Error("Missing fields");
+    }
+
+    const mockToken = "mock-token";
     const mockUser = { name, email };
-    setToken(mockToken);
+
     setUser(mockUser);
+    setToken(mockToken);
+
     return { user: mockUser, token: mockToken };
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('auth');
+    localStorage.removeItem("auth");
   };
 
-  const value = { user, token, login, signup, logout, isAuthenticated: !!token };
+  const value = {
+    user,
+    token,
+    isAuthenticated: !!token,
+    login,
+    signup,
+    logout
+  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  // prevent route flicker
+  if (loading) return null;
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  if (!ctx) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
   return ctx;
 };
 

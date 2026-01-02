@@ -1,26 +1,35 @@
-import React from 'react';
-import TaskCard from './TaskCard';
+import TaskCard from "./TaskCard";
 
-const KanbanColumn = ({ title, tasks, status }) => {
+const KanbanColumn = ({ title, status, tasks, moveTask }) => {
+  const nextStatus =
+    status === "todo"
+      ? "inProgress"
+      : status === "inProgress"
+      ? "completed"
+      : null;
+
   return (
     <div className="kanban-column">
       <div className="column-header">
-        <h3 className="column-title">{title}</h3>
+        <span className="column-title">{title}</span>
         <span className="task-count">{tasks.length}</span>
       </div>
-      
+
       <div className="tasks-list">
-        {tasks.map(task => (
-          <TaskCard 
-            key={task.id} 
-            task={task} 
-            status={status}
-          />
-        ))}
-        {tasks.length === 0 && (
-          <div className="empty-state">
-            <p>No tasks</p>
-          </div>
+        {tasks.length === 0 ? (
+          <p className="empty-text">No tasks</p>
+        ) : (
+          tasks.map(task => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onMove={
+                nextStatus
+                  ? () => moveTask(task.id, nextStatus)
+                  : null
+              }
+            />
+          ))
         )}
       </div>
     </div>

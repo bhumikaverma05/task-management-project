@@ -1,119 +1,77 @@
-import React from 'react';
-import Sidebar from './Sidebar';
-import Header from './Header';
-import SummaryCard from './SummaryCard';
-import KanbanColumn from './KanbanColumn';
+import { useState } from "react";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import SummaryCard from "./SummaryCard";
+import KanbanColumn from "./KanbanColumn";
 
 const Dashboard = () => {
-  // Mock data - replace with actual API calls
-  const summaryData = {
-    todo: 4,
-    inProgress: 12,
-    completed: 86,
-    pendingReview: 4
+  const [tasks, setTasks] = useState([
+    {
+      id: 1,
+      title: "Design dashboard UI",
+      description: "Create clean layout and blue theme",
+      status: "todo",
+      priority: "high"
+    },
+    {
+      id: 2,
+      title: "Setup routing",
+      description: "Connect dashboard and tasks page",
+      status: "inProgress",
+      priority: "medium"
+    }
+  ]);
+
+  const moveTask = (taskId, newStatus) => {
+    setTasks(prev =>
+      prev.map(task =>
+        task.id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
   };
 
-  const tasks = {
-    todo: [
-      {
-        id: 1,
-        title: 'Finalize Q3 marketing strategy',
-        dueDate: 'Oct 15',
-        priority: 'high',
-        description: 'Complete the marketing strategy for Q3 including budget allocation'
-      },
-      {
-        id: 2,
-        title: 'Draft blog post on new feature',
-        dueDate: 'Oct 20',
-        priority: 'medium',
-        description: 'Write a comprehensive blog post about the latest feature release'
-      }
-    ],
-    inProgress: [
-      {
-        id: 3,
-        title: 'Design new onboarding flow',
-        dueDate: 'Oct 12',
-        priority: 'high',
-        description: 'Create user-friendly onboarding experience for new users'
-      },
-      {
-        id: 4,
-        title: 'Refactor user authentication',
-        dueDate: 'Oct 25',
-        priority: 'low',
-        description: 'Improve authentication system security and performance'
-      }
-    ],
-    completed: [
-      {
-        id: 5,
-        title: 'Fix mobile layout bugs',
-        dueDate: 'Oct 05',
-        priority: 'medium',
-        description: 'Resolve responsive design issues on mobile devices'
-      }
-    ],
-    pendingReview: []
-  };
+  const todo = tasks.filter(t => t.status === "todo");
+  const inProgress = tasks.filter(t => t.status === "inProgress");
+  const completed = tasks.filter(t => t.status === "completed");
 
   return (
     <div className="dashboard-container">
       <Sidebar />
+
       <div className="main-content">
         <Header />
+
         <div className="dashboard-content">
-          {/* Summary Cards */}
+          <h1 className="page-title">Dashboard</h1>
+
           <div className="summary-grid">
-            <SummaryCard 
-              title="To-Do" 
-              count={summaryData.todo} 
-              type="todo" 
-            />
-            <SummaryCard 
-              title="In Progress" 
-              count={summaryData.inProgress} 
-              change="+2% this week"
-              type="inProgress"
-            />
-            <SummaryCard 
-              title="Completed" 
-              count={summaryData.completed} 
-              change="-1% this week"
-              type="completed"
-            />
-            <SummaryCard 
-              title="Pending Review" 
-              count={summaryData.pendingReview} 
-              change="+8% this week"
-              type="review"
-            />
+            <SummaryCard title="Total Tasks" count={tasks.length} />
+            <SummaryCard title="To Do" count={todo.length} />
+            <SummaryCard title="In Progress" count={inProgress.length} />
+            <SummaryCard title="Completed" count={completed.length} />
           </div>
 
-          {/* Kanban Board */}
           <div className="kanban-section">
             <h2 className="section-title">Task Board</h2>
+
             <div className="kanban-board">
-              <KanbanColumn 
-                title="To-Do" 
-                tasks={tasks.todo} 
+              <KanbanColumn
+                title="To Do"
                 status="todo"
+                tasks={todo}
+                moveTask={moveTask}
               />
-              <KanbanColumn 
-                title="In Progress" 
-                tasks={tasks.inProgress} 
+              <KanbanColumn
+                title="In Progress"
                 status="inProgress"
+                tasks={inProgress}
+                moveTask={moveTask}
               />
-              <KanbanColumn 
-                title="Completed" 
-                tasks={tasks.completed} 
+              <KanbanColumn
+                title="Completed"
                 status="completed"
-              />
-              <KanbanColumn 
-                title="Pending Review" 
-                tasks={tasks.pendingReview} 
-                status="review"
+                tasks={completed}
+                moveTask={moveTask}
               />
             </div>
           </div>
