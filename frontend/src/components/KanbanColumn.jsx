@@ -17,7 +17,7 @@ const KanbanColumn = ({ title, status, tasks, moveTask }) => {
 
       <div className="tasks-list">
         {tasks.length === 0 ? (
-          <p className="empty-text">No tasks</p>
+          <p>No tasks</p>
         ) : (
           tasks.map(task => (
             <TaskCard
