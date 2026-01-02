@@ -412,16 +412,15 @@ body[data-theme="dark"]{
   /* Borders & shadows */
   --surface-border: rgba(255,255,255,0.08);
   --soft-shadow: 0 12px 32px rgba(0,0,0,0.6);
+
+  /* Global text & background */
+  background: var(--bg);
+  color: #e5e7eb;
 }
 
 /* =========================
    GLOBAL TEXT & BACKGROUND
 ========================= */
-body[data-theme="dark"]{
-  background: var(--bg);
-  color: #e5e7eb;
-}
-
 body[data-theme="dark"] h1,
 body[data-theme="dark"] h2,
 body[data-theme="dark"] h3,
