@@ -39,9 +39,11 @@ export function AuthProvider({ children }) {
       setLoading(false)
     })
 
+    // Listen for changes
     const { data: listener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
       setSession(currentSession)
       setUser(currentSession?.user ?? null)
+      setLoading(false)
     })
 
     return () => {
@@ -147,9 +149,13 @@ export const useAuth = () => {
     user, 
     session, 
     loading,
+    // FIX: Add isAuthenticated derived state
+    isAuthenticated: !!session,
     signUp,
     signIn,
     signInWithGoogle,
+    // FIX: Alias signOut to logout for compatibility with App.jsx
+    logout: signOut,
     signOut
   }
 

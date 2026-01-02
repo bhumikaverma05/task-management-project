@@ -22,7 +22,14 @@ const Login = () => {
 
     setLoading(true);
     try {
-      await auth.login({ email, password });
+      // FIX: Changed 'login' to 'signIn' and passed arguments separately
+      // to match the signature in AuthContext.jsx
+      const result = await auth.signIn(email, password);
+      
+      if (result.error) {
+        throw result.error;
+      }
+
       if (!remember) localStorage.removeItem('auth');
       navigate('/dashboard');
     } catch (err) {
